@@ -13,12 +13,13 @@ import { OrderItemsComponent } from '../order-items/order-items.component';
   ]
 })
 export class OrderComponent implements OnInit {
-  customerList : []
+  customerList : Customer[];
+  isValid:boolean = true;
   constructor(public service: OrderService, private Dialogue: MatDialog, private customerService: CustomerService) { }
 
   ngOnInit() {
    this.resetForm()
-   this.customerService.getCustomerList().then( res => this.customerList)
+   this.customerService.getCustomerList().subscribe(res => this.customerList = res as Customer[])
   }
   resetForm(form?:NgForm ){
     if (form==null)
@@ -54,5 +55,20 @@ export class OrderComponent implements OnInit {
       return pre + curr.Total;
     },0) 
     this.service.formData.GTotal = parseFloat((this.service.formData.GTotal).toFixed(2))
+  }
+  valiadateForm(){
+    this.isValid = true;
+    if (this.service.formData.CustomerID == 0)
+    this.isValid = false;
+    else if (this.service.orderItems.length == 0)
+    this.isValid = false;
+    return this.isValid;
+  }
+  onSubmit(form:NgForm){
+    if(this.valiadateForm())
+    {
+      
+    }
+
   }
 }
